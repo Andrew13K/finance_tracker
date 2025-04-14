@@ -1,4 +1,6 @@
-CREATE TABLE User(
+CREATE DATABASE IF NOT EXISTS manage_spendings;
+
+CREATE TABLE IF NOT EXISTS User(
     id INT NOT NULL AUTO_INCREMENT,
     nickname VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
@@ -7,13 +9,13 @@ CREATE TABLE User(
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Category(
+CREATE TABLE IF NOT EXISTS Category(
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(30) UNIQUE NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE Spendings(
+CREATE TABLE IF NOT EXISTS Spendings(
     id INT NOT NULL AUTO_INCREMENT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     category_id INT NOT NULL,
@@ -26,7 +28,7 @@ CREATE TABLE Spendings(
     CHECK (amount > 0)
 );
 
-CREATE TABLE Friendship_Request(
+CREATE TABLE IF NOT EXISTS Friendship_Request(
     id INT NOT NULL AUTO_INCREMENT,
     date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sender_id INT NOT NULL,
@@ -37,7 +39,7 @@ CREATE TABLE Friendship_Request(
     FOREIGN KEY (receiver_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Friends(
+CREATE TABLE IF NOT EXISTS Friends(
     friend_id INT NOT NULL,
     user_id INT NOT NULL,
     PRIMARY KEY (user_id, friend_id),
@@ -45,7 +47,7 @@ CREATE TABLE Friends(
     FOREIGN KEY (user_id) REFERENCES User(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Visibility(
+CREATE TABLE IF NOT EXISTS Visibility(
     friend_id INT NOT NULL,
     user_id INT NOT NULL,
     is_visible BOOLEAN DEFAULT FALSE,

@@ -6,11 +6,17 @@
 using namespace std;
 
 MySQLConnection::MySQLConnection(): conn(NULL), connected(false){
-    const string& host = getenv("DB_HOST");
-    const string& user = getenv("DB_USER");
-    const string& password = getenv("DB_PASSWORD");
-    const string& database = getenv("DB_NAME");
-    int port = stoi(getenv("DB_PORT"));
+    const char* host_env = getenv("DB_HOST");
+    const char* user_env = getenv("DB_USER");
+    const char* password_env = getenv("DB_PASSWORD");
+    const char* database_env = getenv("DB_NAME");
+    int port_env = stoi(getenv("DB_PORT"));
+
+    host = host_env ? host_env : "localhost";
+    user = user_env ? user_env : "root";
+    password = password_env ? password_env : "your_password";
+    database = database_env ? database_env : "manage_spendings";
+    port = port_env ? port_env : 3360;
 
     conn = mysql_init(NULL);
     if(conn == NULL)
@@ -25,7 +31,7 @@ bool MySQLConnection::connect()
 {
     if(connected) return true;
 
-    if(mysql_real_connect(conn,host.c_str(), user.c_str(),password.c_str(),database.c_str(),
+    if(mysql_real_connect(conn, host, user, password, database,
         port, NULL,0)==NULL)
     {
         cerr<<"Connection error: "<<mysql_error(conn)<<endl;
@@ -44,4 +50,20 @@ void MySQLConnection::disconnect()
         connected = false;
         cout<<"Disconnected from MySQL database"<<endl;
     }
+}
+
+bool MySQLConnection::executeQuery(const string& query)
+{
+    if(!connected)
+    {
+        cerr<<"Database is not connected"<<endl;
+        return false;
+    }
+    if(mysql_query(conn, query.c_str()) != 0)
+    {
+        cerr<<"Error during query execution: "<<mysql_error(conn)<<endl;
+        return false;
+    }
+    cout<<"Query executed correctly"<<endl;
+    return true;
 }

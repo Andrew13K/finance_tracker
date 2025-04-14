@@ -9,10 +9,10 @@ using namespace std;
 class MySQLConnection{
     private:
         MYSQL* conn;
-        string host;
-        string user;
-        string password;
-        string database;
+        const char* host;
+        const char* user;
+        const char* password;
+        const char* database;
         int port;
         bool connected;
     public:
@@ -21,6 +21,7 @@ class MySQLConnection{
 
         bool connect();
         void disconnect();
+        bool executeQuery(const string& query);
 };
 
 #endif

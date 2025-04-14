@@ -15,6 +15,9 @@ bool App::OnInit(){
     if(!db.connect())
         return 1;
     cout << "Programm is running!"<<endl;
+    string create_db_query ="CREATE DATABASE IF NOT EXISTS manage_spendings";
+    
+    db.executeQuery(create_db_query);
 
     MainFrame* mainFrame = new MainFrame("Hello GUIIII");
     mainFrame->SetClientSize(800, 600);
@@ -23,3 +26,15 @@ bool App::OnInit(){
     
     return true;
 }
+
+/*
+int main(){
+loadEnvFile();
+    MySQLConnection db;
+
+    if(!db.connect())
+        return 1;
+    cout << "Programm is running!"<<endl;
+return 0;
+}
+*/
