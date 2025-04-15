@@ -1,7 +1,9 @@
 #include "../include/mysql_connection.hpp"
+#include "../include/utils.hpp"
 #include <mysql/mysql.h>
 #include <iostream>
 #include <string>
+#include <string.h>
 
 using namespace std;
 
@@ -64,6 +66,62 @@ bool MySQLConnection::executeQuery(const string& query)
         cerr<<"Error during query execution: "<<mysql_error(conn)<<endl;
         return false;
     }
-    cout<<"Query executed correctly"<<endl;
+    return true;
+}
+
+bool MySQLConnection::registration(const string& nickname, const string& name, 
+                            const string& password, const string& email){
+    if(!connected)
+    {
+        cerr<<"Database is not connected"<<endl;
+        return false;
+    }
+    string hashedPassword = hashPassword(password);
+
+    MYSQL_STMT* stmt = mysql_stmt_init(conn);
+    if(!stmt){
+        cerr << "mysql_stmt_init() failed\n";
+        return false;
+    }
+    string query = "INSERT INTO User (nickname, name, password, email) VALUES (?, ?, ?, ?)";
+    if(mysql_stmt_prepare(stmt, query.c_str(), query.length()) != 0)
+    {
+        cerr << "Error during registration: "<< mysql_stmt_error(stmt) << endl;
+        mysql_stmt_close(stmt);
+        return false;
+    }
+    MYSQL_BIND bind[4];
+    memset(bind, 0, sizeof(bind));
+
+    bind[0].buffer_type = MYSQL_TYPE_STRING;
+    bind[0].buffer = (void*)nickname.c_str();
+    bind[0].buffer_length = nickname.length();
+
+    bind[1].buffer_type = MYSQL_TYPE_STRING;
+    bind[1].buffer = (void*)name.c_str();
+    bind[1].buffer_length = name.length();
+
+    bind[2].buffer_type = MYSQL_TYPE_STRING;
+    bind[2].buffer = (void*)hashedPassword.c_str();
+    bind[2].buffer_length = hashedPassword.length();
+
+    bind[3].buffer_type = MYSQL_TYPE_STRING;
+    bind[3].buffer = (void*)email.c_str();
+    bind[3].buffer_length = email.length();
+
+    if(mysql_stmt_bind_param(stmt, bind) != 0)
+    {
+        cerr<<"mysql_stmt_bind_param() failed: " << mysql_stmt_error(stmt) << endl;
+        mysql_stmt_close(stmt);
+        return false;
+    }
+    if(mysql_stmt_execute(stmt))
+    {
+        cerr << "mysql_stmt_execute() failed: "<< mysql_stmt_error(stmt) << endl;
+        mysql_stmt_close(stmt);
+        return false;
+    }
+    mysql_stmt_close(stmt);
+    cout << "User successfully registered!" << endl;
     return true;
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sodium.h>
 
 using namespace std;
 
@@ -32,4 +33,20 @@ void loadEnvFile(const string& filepath)
 
         setenv(key.c_str(),value.c_str(),1);
     }
+}
+
+string hashPassword(const string& password)
+{
+    if(!(sodium_init() == 0))
+        throw runtime_error("Failed to initialize libsodium\n");
+    char hash[crypto_generichash_KEYBYTES];
+    if(crypto_pwhash_str(hash, password.c_str(),password.length(),
+                        crypto_pwhash_OPSLIMIT_INTERACTIVE,crypto_pwhash_MEMLIMIT_INTERACTIVE) != 0)
+        throw runtime_error("Out of memory while hashing password\n");
+    return string(hash);
+}
+
+bool verifyPassword(const string& hash, const string& password)
+{
+    return crypto_pwhash_str_verify(hash.c_str(), password.c_str(), password.length()) == 0;
 }
