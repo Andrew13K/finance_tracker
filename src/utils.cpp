@@ -35,13 +35,15 @@ void loadEnvFile(const string& filepath)
 
         setenv(key.c_str(),value.c_str(),1);
     }
+    cout<<"Variables from .env file loaded successfully!"<<endl;
 }
 
 string hashPassword(const string& password)
 {
     if(!(sodium_init() == 0))
         throw runtime_error("Failed to initialize libsodium\n");
-    char hash[crypto_generichash_KEYBYTES];
+ 
+    char hash[crypto_pwhash_STRBYTES];
     if(crypto_pwhash_str(hash, password.c_str(),password.length(),
                         crypto_pwhash_OPSLIMIT_INTERACTIVE,crypto_pwhash_MEMLIMIT_INTERACTIVE) != 0)
         throw runtime_error("Out of memory while hashing password\n");

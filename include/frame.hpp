@@ -7,15 +7,14 @@
 class MainFrame : public wxFrame{
     public:
         MainFrame(const wxString& title, MySQLConnection& db);
-    private:
-        MySQLConnection& dbRef;
+        void OnRegisterClick(wxCommandEvent& evt);
+        void HandleUserRegistration();
         wxTextCtrl* usernameInput;
         wxTextCtrl* nameInput;
         wxTextCtrl* passwordInput;
         wxTextCtrl* emailInput;
-        
-        void OnRegisterClick(wxCommandEvent& evt);
-        
+    private:
+        MySQLConnection db;
 };
 
 #endif //GUI_HPP

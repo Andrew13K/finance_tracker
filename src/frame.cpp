@@ -6,8 +6,7 @@
 
 using namespace std;
 
-MainFrame::MainFrame(const wxString& title, MySQLConnection& db): wxFrame(nullptr, wxID_ANY, title), dbRef(db){
-    cout<<"Is this DB"<<endl;
+MainFrame::MainFrame(const wxString& title, MySQLConnection& dbConn): wxFrame(nullptr, wxID_ANY, title), db(dbConn){
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
@@ -41,10 +40,13 @@ MainFrame::MainFrame(const wxString& title, MySQLConnection& db): wxFrame(nullpt
     panel->SetSizer(vbox);
 
     registerButton->Bind(wxEVT_BUTTON, &MainFrame::OnRegisterClick, this);
-    cout<<"Fra,e end"<<endl;
 }
 
 void MainFrame::OnRegisterClick(wxCommandEvent& evt){
+    HandleUserRegistration();
+}
+
+void MainFrame::HandleUserRegistration() {
     cout<<"Register on click begin"<<endl;
     string username = usernameInput->GetValue().ToStdString();
     string name = nameInput->GetValue().ToStdString();
@@ -55,10 +57,11 @@ void MainFrame::OnRegisterClick(wxCommandEvent& evt){
         wxMessageBox("All fields are required.", "Error", wxOK | wxICON_ERROR);
         return;
     }
-
-    if (dbRef.registration(username, name, password, email)) {
+    cout<<"Variables checked"<<endl;
+    if (db.registration(username, name, password, email)) {
         wxMessageBox("User registered successfully!", "Success", wxOK | wxICON_INFORMATION);
     } else {
         wxMessageBox("Registration failed.", "Error", wxOK | wxICON_ERROR);
     }
+    cout<<"Done registration"<<endl;
 }
