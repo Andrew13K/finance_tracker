@@ -1,7 +1,7 @@
 #include "../include/utils.hpp"
 #include "../include/mysql_connection.hpp"
 #include "../include/app.hpp"
-#include "../include/frame.hpp"
+#include "../include/registration_frame.hpp"
 #include <iostream>
 
 using namespace std;

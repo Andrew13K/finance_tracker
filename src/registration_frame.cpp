@@ -1,5 +1,6 @@
-#include "../include/frame.hpp"
+#include "../include/registration_frame.hpp"
 #include "../include/mysql_connection.hpp"
+#include "../include/dashboard_frame.hpp"
 #include <wx/wx.h>
 #include <string>
 #include <iostream>
@@ -47,7 +48,6 @@ void MainFrame::OnRegisterClick(wxCommandEvent& evt){
 }
 
 void MainFrame::HandleUserRegistration() {
-    cout<<"Register on click begin"<<endl;
     string username = usernameInput->GetValue().ToStdString();
     string name = nameInput->GetValue().ToStdString();
     string email = emailInput->GetValue().ToStdString();
@@ -57,10 +57,15 @@ void MainFrame::HandleUserRegistration() {
         wxMessageBox("All fields are required.", "Error", wxOK | wxICON_ERROR);
         return;
     }
-    cout<<"Variables checked"<<endl;
     if (db.registration(username, name, password, email)) {
         wxMessageBox("User registered successfully!", "Success", wxOK | wxICON_INFORMATION);
-    } else {
+        DashboardFrame* dashboardFrame = new DashboardFrame("Dashboard Finance", wxString(name), db);
+        dashboardFrame->Show(true);
+        this->Hide();
+        wxTheApp->SetTopWindow(dashboardFrame);
+        Close(true);
+    } 
+    else {
         wxMessageBox("Registration failed.", "Error", wxOK | wxICON_ERROR);
     }
     cout<<"Done registration"<<endl;
