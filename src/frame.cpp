@@ -2,10 +2,12 @@
 #include "../include/mysql_connection.hpp"
 #include <wx/wx.h>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
 MainFrame::MainFrame(const wxString& title, MySQLConnection& db): wxFrame(nullptr, wxID_ANY, title), dbRef(db){
+    cout<<"Is this DB"<<endl;
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
@@ -39,9 +41,11 @@ MainFrame::MainFrame(const wxString& title, MySQLConnection& db): wxFrame(nullpt
     panel->SetSizer(vbox);
 
     registerButton->Bind(wxEVT_BUTTON, &MainFrame::OnRegisterClick, this);
+    cout<<"Fra,e end"<<endl;
 }
 
 void MainFrame::OnRegisterClick(wxCommandEvent& evt){
+    cout<<"Register on click begin"<<endl;
     string username = usernameInput->GetValue().ToStdString();
     string name = nameInput->GetValue().ToStdString();
     string email = emailInput->GetValue().ToStdString();

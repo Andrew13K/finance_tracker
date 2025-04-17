@@ -1,7 +1,9 @@
 #include "../include/utils.hpp"
+#include "../include/mysql_connection.hpp"
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <sodium.h>
 
 using namespace std;
@@ -49,4 +51,27 @@ string hashPassword(const string& password)
 bool verifyPassword(const string& hash, const string& password)
 {
     return crypto_pwhash_str_verify(hash.c_str(), password.c_str(), password.length()) == 0;
+}
+
+bool executeSQLFromFile(MySQLConnection& db, const string& filepath){
+    ifstream file(filepath);
+    if(!file.is_open()){
+        cerr<<"Failed to open SQL file: "<<filepath<<endl;
+        return false;
+    }
+
+    stringstream buffer;
+    buffer << file.rdbuf();
+
+    string sql = buffer.str();
+
+    size_t pos = 0;
+    while((pos = sql.find(';')) != string::npos){
+        string query = sql.substr(0, pos+1);
+        sql.erase(0,pos+1);
+        if(query.find_first_not_of(" \n\t\r") != string::npos){
+            db.executeQuery(query);
+        }
+    }
+    return true;
 }

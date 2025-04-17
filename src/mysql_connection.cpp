@@ -71,6 +71,7 @@ bool MySQLConnection::executeQuery(const string& query)
 
 bool MySQLConnection::registration(const string& nickname, const string& name, 
                             const string& password, const string& email){
+                                cout<<"this is register methode"<<endl;
     if(!connected)
     {
         cerr<<"Database is not connected"<<endl;
