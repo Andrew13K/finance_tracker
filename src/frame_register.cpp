@@ -1,13 +1,13 @@
-#include "../include/registration_frame.hpp"
+#include "../include/frame_register.hpp"
 #include "../include/mysql_connection.hpp"
-#include "../include/dashboard_frame.hpp"
+#include "../include/frame_dashboard.hpp"
 #include <wx/wx.h>
 #include <string>
 #include <iostream>
 
 using namespace std;
 
-MainFrame::MainFrame(const wxString& title, MySQLConnection& dbConn): wxFrame(nullptr, wxID_ANY, title), db(dbConn){
+RegisterFrame::RegisterFrame(const wxString& title, MySQLConnection& dbConn): wxFrame(nullptr, wxID_ANY, title, wxDefaultPosition, wxSize(800, 600)), db(dbConn){
     wxPanel* panel = new wxPanel(this);
     wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
 
@@ -40,14 +40,14 @@ MainFrame::MainFrame(const wxString& title, MySQLConnection& dbConn): wxFrame(nu
 
     panel->SetSizer(vbox);
 
-    registerButton->Bind(wxEVT_BUTTON, &MainFrame::OnRegisterClick, this);
+    registerButton->Bind(wxEVT_BUTTON, &RegisterFrame::OnRegisterClick, this);
 }
 
-void MainFrame::OnRegisterClick(wxCommandEvent& evt){
+void RegisterFrame::OnRegisterClick(wxCommandEvent& evt){
     HandleUserRegistration();
 }
 
-void MainFrame::HandleUserRegistration() {
+void RegisterFrame::HandleUserRegistration() {
     string username = usernameInput->GetValue().ToStdString();
     string name = nameInput->GetValue().ToStdString();
     string email = emailInput->GetValue().ToStdString();

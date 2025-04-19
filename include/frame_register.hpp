@@ -4,16 +4,16 @@
 #include "mysql_connection.hpp"
 #include <wx/wx.h>
 
-class MainFrame : public wxFrame{
+class RegisterFrame : public wxFrame{
     public:
-        MainFrame(const wxString& title, MySQLConnection& db);
+        RegisterFrame(const wxString& title, MySQLConnection& db);
         void OnRegisterClick(wxCommandEvent& evt);
         void HandleUserRegistration();
+    private:
         wxTextCtrl* usernameInput;
         wxTextCtrl* nameInput;
         wxTextCtrl* passwordInput;
         wxTextCtrl* emailInput;
-    private:
         MySQLConnection db;
 };
 

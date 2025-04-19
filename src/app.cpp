@@ -1,7 +1,7 @@
 #include "../include/utils.hpp"
 #include "../include/mysql_connection.hpp"
 #include "../include/app.hpp"
-#include "../include/registration_frame.hpp"
+#include "../include/frame_start.hpp"
 #include <iostream>
 
 using namespace std;
@@ -36,11 +36,11 @@ bool App::OnInit(){
     if(executeSQLFromFile(*db, "queries/visibility/create_table.sql"))
         cout<<"Visibility table created successfully!"<<endl;                                     
 
-    MainFrame* mainFrame = new MainFrame("Finance Maganer", *db);
-    mainFrame->SetClientSize(800, 600);
-    mainFrame->Center();
-    mainFrame->Show(true);
-    SetTopWindow(mainFrame);
+    StartFrame* start = new StartFrame("Welcome", *db);
+    start->SetClientSize(800, 600);
+    start->Center();
+    start->Show(true);
+    SetTopWindow(start);
 
     cout<<"Gui created in the center"<<endl;
     return true;

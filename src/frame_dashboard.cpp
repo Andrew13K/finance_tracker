@@ -1,4 +1,4 @@
-#include "../include/dashboard_frame.hpp"
+#include "../include/frame_dashboard.hpp"
 #include "../include/mysql_connection.hpp"
 #include <wx/wx.h>
 #include <string>
