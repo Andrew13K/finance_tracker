@@ -41,6 +41,12 @@ RegisterFrame::RegisterFrame(const wxString& title, MySQLConnection& dbConn): wx
     panel->SetSizer(vbox);
 
     registerButton->Bind(wxEVT_BUTTON, &RegisterFrame::OnRegisterClick, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &RegisterFrame::OnClose, this);
+}
+
+void RegisterFrame::OnClose(wxCloseEvent& evt) {
+    Destroy();
+    wxTheApp->ExitMainLoop();
 }
 
 void RegisterFrame::OnRegisterClick(wxCommandEvent& evt){

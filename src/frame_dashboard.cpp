@@ -23,6 +23,12 @@ DashboardFrame::DashboardFrame(const wxString& title, const wxString& name, MySQ
 
     vbox->Add(welcomeText, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 30);\
     panel->SetSizer(vbox);
+    this->Bind(wxEVT_CLOSE_WINDOW, &DashboardFrame::OnClose, this);
+}
+
+void DashboardFrame::OnClose(wxCloseEvent& evt) {
+    Destroy();
+    wxTheApp->ExitMainLoop();
 }
 
 DashboardFrame::~DashboardFrame(){

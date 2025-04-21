@@ -9,6 +9,7 @@ class LoginFrame: public wxFrame {
         LoginFrame(const wxString& title, MySQLConnection& db);
         void OnLoginClick(wxCommandEvent& evt);
         void HandleUserLogin();
+        void OnClose(wxCloseEvent& evt);
     private:
         wxTextCtrl* usernameInput;
         wxTextCtrl* passwordInput;

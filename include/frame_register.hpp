@@ -9,6 +9,7 @@ class RegisterFrame : public wxFrame{
         RegisterFrame(const wxString& title, MySQLConnection& db);
         void OnRegisterClick(wxCommandEvent& evt);
         void HandleUserRegistration();
+        void OnClose(wxCloseEvent& evt);
     private:
         wxTextCtrl* usernameInput;
         wxTextCtrl* nameInput;

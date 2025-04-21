@@ -8,6 +8,7 @@ class DashboardFrame: public wxFrame {
     public:
         DashboardFrame(const wxString& title, const wxString& name, MySQLConnection& db);
         ~DashboardFrame();
+        void OnClose(wxCloseEvent& evt);
     private:
         wxPanel* panel;
         MySQLConnection& db;

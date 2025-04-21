@@ -29,7 +29,14 @@ LoginFrame::LoginFrame(const wxString& title, MySQLConnection& dbConn): wxFrame(
     panel->SetSizer(vbox);
 
     loginButton->Bind(wxEVT_BUTTON, &LoginFrame::OnLoginClick, this);
+    this->Bind(wxEVT_CLOSE_WINDOW, &LoginFrame::OnClose, this);
 }
+
+void LoginFrame::OnClose(wxCloseEvent& evt) {
+    Destroy();
+    wxTheApp->ExitMainLoop();
+}
+
 
 void LoginFrame::OnLoginClick(wxCommandEvent& evt){
     HandleUserLogin();
