@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <string.h>
+#include <sodium.h>
 #include <sstream>
 
 using namespace std;
@@ -134,14 +135,14 @@ bool MySQLConnection::login(const string& username, const string& password){
         cerr << "Database is not connected" << endl;
         return false;
     }
-    string hashedPassword = hashPassword(password);
+
     MYSQL_STMT *stmt = mysql_stmt_init(conn);
     if (!stmt) {
         cerr << "Could not initialize statement" << endl;
         return false;
     }
     
-    const char *query = "SELECT * FROM User WHERE nickname = ? AND password = ?";
+    const char *query = "SELECT password FROM User WHERE nickname = ?";
     
     if (mysql_stmt_prepare(stmt, query, strlen(query)) != 0) {
         cerr << "Failed to prepare statement: " << mysql_stmt_error(stmt) << endl;
@@ -149,16 +150,11 @@ bool MySQLConnection::login(const string& username, const string& password){
         return false;
     }
     
-    MYSQL_BIND bind[2];
+    MYSQL_BIND bind[1];
     memset(bind, 0, sizeof(bind));
-    
     bind[0].buffer_type = MYSQL_TYPE_STRING;
     bind[0].buffer = (void*)username.c_str();
     bind[0].buffer_length = username.length();
-    
-    bind[1].buffer_type = MYSQL_TYPE_STRING;
-    bind[1].buffer = (void*)hashedPassword.c_str();
-    bind[1].buffer_length = hashedPassword.length();
     
     if (mysql_stmt_bind_param(stmt, bind) != 0) {
         cerr << "Failed to bind parameters: " << mysql_stmt_error(stmt) << endl;
@@ -171,15 +167,42 @@ bool MySQLConnection::login(const string& username, const string& password){
         mysql_stmt_close(stmt);
         return false;
     }
-    
-    if (mysql_stmt_store_result(stmt) != 0) {
-        cerr << "Failed to store result: " << mysql_stmt_error(stmt) << endl;
+
+    MYSQL_BIND result[1];
+    memset(result, 0, sizeof(result));
+
+    char hash_buffer[crypto_pwhash_STRBYTES];
+    unsigned long hash_length;
+    bool is_null;
+
+    result[0].buffer_type = MYSQL_TYPE_STRING;
+    result[0].buffer = hash_buffer;
+    result[0].buffer_length = sizeof(hash_buffer);
+    result[0].length = &hash_length;
+    result[0].is_null = &is_null;    
+
+    if (mysql_stmt_bind_result(stmt, result) != 0) {
+        cerr << "Failed to bind result: " << mysql_stmt_error(stmt) << endl;
         mysql_stmt_close(stmt);
         return false;
     }
     
-    bool success = (mysql_stmt_num_rows(stmt) > 0);
+    if (mysql_stmt_fetch(stmt) != 0) {
+        mysql_stmt_close(stmt);
+        cout << "Invalid username or password." << endl;
+        return false;
+    }
+    
+    if (is_null) {
+        mysql_stmt_close(stmt);
+        cout << "Invalid username or password." << endl;
+        return false;
+    }
+
+    string storedHash(hash_buffer, hash_length);
     mysql_stmt_close(stmt);
+    
+    bool success = verifyPassword(storedHash, password);
     
     if (success) {
         cout << "Successful login!" << endl;
