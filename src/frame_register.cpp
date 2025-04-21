@@ -69,7 +69,6 @@ void RegisterFrame::HandleUserRegistration() {
         dashboardFrame->Show(true);
         this->Hide();
         wxTheApp->SetTopWindow(dashboardFrame);
-        Close(true);
     } 
     else {
         wxMessageBox("Registration failed.", "Error", wxOK | wxICON_ERROR);

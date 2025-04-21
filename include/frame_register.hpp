@@ -15,7 +15,7 @@ class RegisterFrame : public wxFrame{
         wxTextCtrl* nameInput;
         wxTextCtrl* passwordInput;
         wxTextCtrl* emailInput;
-        MySQLConnection db;
+        MySQLConnection& db;
 };
 
 #endif //GUI_HPP
