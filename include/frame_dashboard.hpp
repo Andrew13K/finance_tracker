@@ -11,18 +11,19 @@ class DashboardFrame: public wxFrame {
         ~DashboardFrame();
     private:
         void OnClose(wxCloseEvent& evt);
+        void OnProfileClicked(wxCommandEvent& event);
+        void OnHistoryClicked(wxCommandEvent& event);
+        void OnFriendsClicked(wxCommandEvent& event);
 
-        // UI Elements
+        wxPanel* contentPanel;
         wxPanel* panel;
         wxStaticText* welcomeText;
         wxBoxSizer* navSizer;
 
-        // Bottom nav buttons
         wxButton* btnProfile;
         wxButton* btnHistory;
         wxButton* btnFriends;
 
-        // DB reference
         MySQLConnection& db;
 };
 

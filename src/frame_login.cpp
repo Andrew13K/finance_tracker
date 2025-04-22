@@ -54,8 +54,9 @@ void LoginFrame::HandleUserLogin() {
         wxMessageBox("User logged in successfully!", "Success", wxOK | wxICON_INFORMATION);
         DashboardFrame* dashboardFrame = new DashboardFrame("Dashboard Finance", wxString(username), db);
         dashboardFrame->Show(true);
-        this->Hide();
+        
         wxTheApp->SetTopWindow(dashboardFrame);
+        this->Destroy();
     } 
     else {
         wxMessageBox("Login failed.", "Error", wxOK | wxICON_ERROR);
