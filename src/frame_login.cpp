@@ -43,6 +43,11 @@ void LoginFrame::OnLoginClick(wxCommandEvent& evt){
 }
 
 void LoginFrame::HandleUserLogin() {
+    if (!db.connect()) {
+        wxMessageBox("Failed to connect to the database.", "Error", wxOK | wxICON_ERROR);
+        return;
+    }
+
     string username = usernameInput->GetValue().ToStdString();
     string password = passwordInput->GetValue().ToStdString();
 

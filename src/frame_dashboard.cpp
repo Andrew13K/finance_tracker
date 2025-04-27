@@ -1,5 +1,6 @@
 #include "../include/frame_dashboard.hpp"
 #include "../include/mysql_connection.hpp"
+#include "../include/frame_start.hpp"
 #include <wx/wx.h>
 #include <string>
 #include <iostream>
@@ -78,6 +79,11 @@ void DashboardFrame::OnProfileClicked(wxCommandEvent& event) {
     wxStaticText* txt = new wxStaticText(contentPanel, wxID_ANY, "Profile View");
     sizer->Add(txt, 0, wxALIGN_CENTER | wxTOP, 20);
 
+    wxButton* btnLogout = new wxButton(contentPanel, wxID_ANY, "Logout");
+    sizer->Add(btnLogout, 0, wxALIGN_CENTER | wxTOP, 20);
+
+    btnLogout->Bind(wxEVT_BUTTON, &DashboardFrame::OnLogoutClicked, this);
+
     sizer->Layout();
     contentPanel->Layout();
     contentPanel->Refresh();
@@ -105,4 +111,16 @@ void DashboardFrame::OnFriendsClicked(wxCommandEvent& event) {
     sizer->Layout();
     contentPanel->Layout();
     contentPanel->Refresh();
+}
+
+void DashboardFrame::OnLogoutClicked(wxCommandEvent& event) {
+    if (db.logout()) {
+        StartFrame* startFrame = new StartFrame("Start Finance App", db);
+        startFrame->Show(true);
+        startFrame->Center();
+        
+        wxTheApp->SetTopWindow(startFrame);
+
+        Destroy();
+    }
 }

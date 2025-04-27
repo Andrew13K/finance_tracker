@@ -14,6 +14,7 @@ class DashboardFrame: public wxFrame {
         void OnProfileClicked(wxCommandEvent& event);
         void OnHistoryClicked(wxCommandEvent& event);
         void OnFriendsClicked(wxCommandEvent& event);
+        void OnLogoutClicked(wxCommandEvent& event);
 
         wxPanel* contentPanel;
         wxPanel* panel;

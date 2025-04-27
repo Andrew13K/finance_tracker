@@ -25,6 +25,7 @@ class MySQLConnection{
         bool registration(const string& nickname, const string& name, 
                     const string& password, const string& email);
         bool login(const string& username, const string& password);
+        bool logout();
 };
 
 #endif

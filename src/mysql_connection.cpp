@@ -1,6 +1,7 @@
 #include "../include/mysql_connection.hpp"
 #include "../include/utils.hpp"
 #include <mysql/mysql.h>
+#include <wx/wx.h>
 #include <iostream>
 #include <string>
 #include <string.h>
@@ -33,26 +34,33 @@ MySQLConnection::~MySQLConnection(){
 
 bool MySQLConnection::connect()
 {
-    if(connected) return true;
+    if (connected) return true;
 
-    if(mysql_real_connect(conn, host, user, password, database,
-        port, NULL,0)==NULL)
-    {
-        cerr<<"Connection error: "<<mysql_error(conn)<<endl;
+    if (conn == nullptr) {
+        conn = mysql_init(nullptr); // recreate connection handler if needed
+        if (conn == nullptr) {
+            cerr << "mysql_init failed!" << endl;
+            return false;
+        }
+    }
+
+    if (mysql_real_connect(conn, host, user, password, database, port, NULL, 0) == NULL) {
+        cerr << "Connection error: " << mysql_error(conn) << endl;
         return false;
     }
     connected = true;
-    cout<<"Connected to MySQL database: "<<database<<endl;
+    cout << "Connected to MySQL database: " << database << endl;
     return true;
 }
 
 void MySQLConnection::disconnect()
 {
-    if(connected && conn)
+    if (connected && conn)
     {
         mysql_close(conn);
+        conn = nullptr; // VERY IMPORTANT!!
         connected = false;
-        cout<<"Disconnected from MySQL database"<<endl;
+        cout << "Disconnected from MySQL database" << endl;
     }
 }
 
@@ -128,6 +136,23 @@ bool MySQLConnection::registration(const string& nickname, const string& name,
     mysql_stmt_close(stmt);
     cout << "User successfully registered!" << endl;
     return true;
+}
+
+bool MySQLConnection::logout(){
+    if (!connected) {
+        cerr << "Database is not connected" << endl;
+        return false;
+    }
+
+    int answer = wxMessageBox("Are you sure you want to logout?", "Confirm Logout", wxYES_NO | wxICON_QUESTION);
+    if (answer == wxYES) {
+        disconnect();
+        cout << "User logged out successfully!" << endl;
+        return true;
+    } else {
+        cout << "Logout canceled." << endl;
+        return false;
+    }
 }
 
 bool MySQLConnection::login(const string& username, const string& password){

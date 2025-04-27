@@ -54,6 +54,11 @@ void RegisterFrame::OnRegisterClick(wxCommandEvent& evt){
 }
 
 void RegisterFrame::HandleUserRegistration() {
+    if (!db.connect()) {
+        wxMessageBox("Failed to connect to the database.", "Error", wxOK | wxICON_ERROR);
+        return;
+    }
+
     string username = usernameInput->GetValue().ToStdString();
     string name = nameInput->GetValue().ToStdString();
     string email = emailInput->GetValue().ToStdString();
